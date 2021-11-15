@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import './field.dart';
 import '../../utils/dimensions.dart';
 
-const shortFringeSquares = 20;
-const menuBarContainerHeight = 50;
+const shortFringeSquares = 12;
+const menuBarContainerHeight = 50.0;
 
 class FieldSettings {
   SquareSize squareSize;

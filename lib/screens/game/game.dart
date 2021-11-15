@@ -4,9 +4,6 @@ import './field.dart';
 import './menu_bar.dart';
 import './field_settings.dart';
 
-const shortFringeSquares = 20;
-const menuBarContainerHeight = 50;
-
 class GameScreen extends StatefulWidget {
   const GameScreen({Key? key}) : super(key: key);
 
@@ -41,13 +38,17 @@ class _GameScreenState extends State<GameScreen> {
 
     var squareSize = fieldSettings?.squareSize;
 
-    return SizedBox(
+    return Container(
       width: double.infinity,
       height: double.infinity,
+      color: Colors.white,
       child: Column(
         children: [
-          MenuBar(
-            gameEngine: gameEngine!,
+          Container(
+            height: menuBarContainerHeight,
+            child: MenuBar(
+              gameEngine: gameEngine!,
+            ),
           ),
           Field(
             gameEngine: gameEngine!,

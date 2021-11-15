@@ -63,7 +63,7 @@ class Field extends StatelessWidget {
       color: light ? lightSquareColor : darkSquareColor,
       height: squareSize.height,
       width: squareSize.width,
-      child: widgetContent,
+      child: Align(alignment: Alignment.center, child: widgetContent),
     );
   }
 }
@@ -75,8 +75,8 @@ class _Bait extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: size.minSize,
-      height: size.minSize,
+      width: size.minSize * 0.8,
+      height: size.minSize * 0.8,
       decoration: BoxDecoration(
         color: baitColor,
         shape: BoxShape.circle,
@@ -113,8 +113,8 @@ class _SnakeBody extends StatelessWidget {
       height: size.height,
       decoration: BoxDecoration(
           color: snakeBodyColor,
-          border: Border.all(color: snakeBorderColor!, width: 2),
-          borderRadius: const BorderRadius.all(Radius.circular(5))),
+          border: Border.all(color: snakeBorderColor!, width: 1),
+          borderRadius: const BorderRadius.all(Radius.circular(3))),
     );
   }
 }
