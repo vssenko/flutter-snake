@@ -28,12 +28,16 @@ class SnakeGameEngine {
 
   resetField() {
     score = 0;
-    _field = List.filled(ySize, List.filled(xSize, SquareContent.empty));
+    _field = [];
+    for (var y = 0; y < ySize; y++) {
+      _field.add(List.filled(xSize, SquareContent.empty));
+    }
   }
 
   initializeSnake() {
     var middleRow = (ySize / 2).round();
     var middleColumn = (xSize / 2).round();
+    _field[middleRow][middleColumn - 1] = SquareContent.snakeBody;
     _field[middleRow][middleColumn] = SquareContent.snakeBody;
     _field[middleRow][middleColumn + 1] = SquareContent.snakeHead;
   }
@@ -54,6 +58,8 @@ class SnakeGameEngine {
 
   initializeGame() {
     resetField();
+    initializeSnake();
+    createBait();
   }
 
   getSquareContent({required int x, required int y}) {

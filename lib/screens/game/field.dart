@@ -35,9 +35,10 @@ class Field extends StatelessWidget {
       index++;
       for (var column = 0; column < gameEngine.xSize; column++) {
         index++;
-        rowWidgets.add(_buildSquare(
+        var cellContent = _buildSquare(
             content: gameEngine.getSquareContent(x: column, y: row),
-            light: index % 2 == 0));
+            light: index % 2 == 0);
+        rowWidgets.add(cellContent);
       }
 
       rows.add(Row(children: rowWidgets));
@@ -96,7 +97,7 @@ class _SnakeHead extends StatelessWidget {
       decoration: BoxDecoration(
           color: snakeHeadColor,
           border: Border.all(color: snakeBorderColor!, width: 2),
-          borderRadius: const BorderRadius.all(Radius.circular(20))),
+          borderRadius: const BorderRadius.all(Radius.circular(5))),
     );
   }
 }
@@ -113,7 +114,7 @@ class _SnakeBody extends StatelessWidget {
       decoration: BoxDecoration(
           color: snakeBodyColor,
           border: Border.all(color: snakeBorderColor!, width: 2),
-          borderRadius: const BorderRadius.all(Radius.circular(20))),
+          borderRadius: const BorderRadius.all(Radius.circular(5))),
     );
   }
 }

@@ -28,9 +28,11 @@ class _GameScreenState extends State<GameScreen> {
           setState(() {
             var newSettings = calculateFieldsettings(context);
             fieldSettings = newSettings;
-            gameEngine = SnakeGameEngine(
+            var newGameEngine = SnakeGameEngine(
                 xSize: newSettings.widthSquares,
                 ySize: newSettings.heightSquares);
+            newGameEngine.initializeGame();
+            gameEngine = newGameEngine;
           });
         }
       });
