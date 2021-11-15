@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 import '../utils/routes.dart';
 
-class MenuButton extends StatelessWidget {
+class _MenuButton extends StatelessWidget {
   final VoidCallback? handler;
   final String? name;
-  const MenuButton({Key? key, this.handler, this.name}) : super(key: key);
+  const _MenuButton({Key? key, this.handler, this.name}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -37,11 +37,11 @@ class StartScreen extends StatelessWidget {
       padding: const EdgeInsets.only(top: 250),
       child: Column(
         children: [
-          MenuButton(
+          _MenuButton(
             name: 'New Game',
             handler: _onNewGameClick,
           ),
-          MenuButton(
+          _MenuButton(
             name: 'Leadership',
             handler: _onLeaderboardClick,
           )

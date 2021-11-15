@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../utils/routes.dart';
 
 import '../screens/start.dart';
-import '../screens/game.dart';
+import '../screens/game/game.dart';
 import '../screens/leaderboard.dart';
 import '../screens/not_found.dart';
 
