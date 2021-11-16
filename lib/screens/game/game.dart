@@ -4,6 +4,7 @@ import './game_engine.dart';
 import './field.dart';
 import './menu_bar.dart';
 import './field_settings.dart';
+import '../../utils/routes.dart';
 
 const gameTick = Duration(milliseconds: 350);
 
@@ -24,21 +25,71 @@ class _GameScreenState extends State<GameScreen> {
   GameMove _currentDirection = GameMove.right;
   Timer? _gameTickTimer;
 
+  void _startNewGame() {
+    setState(() {
+      _fieldSettings = null;
+      _gameEngine = null;
+      _currentDirection = GameMove.right;
+      // Add listeners to this class
+      _gameTickTimer = Timer.periodic(gameTick, (timer) {
+        if (_gameEngine == null) {
+          return;
+        }
+
+        setState(() {
+          _gameEngine!.makeMove(_currentDirection);
+          if (_gameEngine!.gameState == GameState.ended) {
+            _gameTickTimer!.cancel();
+            _showEndGameDialog();
+          }
+        });
+      });
+    });
+  }
+
   @override
   initState() {
     super.initState();
 
-    _currentDirection = GameMove.right;
-    // Add listeners to this class
-    _gameTickTimer = Timer.periodic(gameTick, (timer) {
-      if (_gameEngine == null) {
-        return;
-      }
+    _startNewGame();
+  }
 
-      setState(() {
-        _gameEngine!.makeMove(_currentDirection);
-      });
-    });
+  Future<void> _showEndGameDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Your score is ${_gameEngine?.score}'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: [
+                Text('Thanks for playing this masterpiece!'),
+                Text('Your score is ${_gameEngine?.score}!'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      child: const Text('New game'),
+                      onPressed: () {
+                        _startNewGame();
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    ElevatedButton(
+                      child: const Text('Main menu'),
+                      onPressed: () {
+                        Navigator.pushNamed(context, Routes.home);
+                      },
+                    )
+                  ],
+                )
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   void _onPanUpdate(DragUpdateDetails details) {
@@ -49,15 +100,15 @@ class _GameScreenState extends State<GameScreen> {
 
     setState(() {
       if (details.delta.dx.abs() > details.delta.dy.abs()) {
-        if (details.delta.dx > 0) {
+        if (details.delta.dx > 0 && _currentDirection != GameMove.left) {
           _currentDirection = GameMove.right;
-        } else {
+        } else if (_currentDirection != GameMove.right) {
           _currentDirection = GameMove.left;
         }
       } else {
-        if (details.delta.dy > 0) {
+        if (details.delta.dy > 0 && _currentDirection != GameMove.up) {
           _currentDirection = GameMove.down;
-        } else {
+        } else if (_currentDirection != GameMove.down) {
           _currentDirection = GameMove.up;
         }
       }

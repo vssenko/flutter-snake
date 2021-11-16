@@ -104,16 +104,49 @@ class SnakeGameEngine {
   }
 
   void makeMove(GameMove gameMove) {
-    _reflectPositionsInField(_snake, SquareContent.empty);
+    if (gameState == GameState.ended) {
+      return;
+    }
 
-    _snake.removeLast();
+    var currentSnakePosition = [..._snake];
 
     var neck = _snake[0];
     var move = _getMove(gameMove);
     var newHead = Position(x: neck.x + move.xChange, y: neck.y + move.yChange);
+
+    if (_isOutOfBorder(newHead)) {
+      gameState = GameState.ended;
+      return;
+    }
+
+    var newHeadPlaceContent = getSquareContent(x: newHead.x, y: newHead.y);
+    var isOnBait = newHeadPlaceContent == SquareContent.bait;
+
+    if (newHeadPlaceContent == SquareContent.snakeBody) {
+      gameState = GameState.ended;
+      return;
+    }
+
+    if (!isOnBait) {
+      _snake.removeLast();
+    }
+
     _snake = [newHead, ..._snake];
 
+    _reflectPositionsInField(currentSnakePosition, SquareContent.empty);
     _reflectSnakeInField();
+
+    if (isOnBait) {
+      score++;
+      _createBait();
+    }
+  }
+
+  bool _isOutOfBorder(Position position) {
+    return position.x < 0 ||
+        position.x >= xSize ||
+        position.y < 0 ||
+        position.y >= ySize;
   }
 }
 
