@@ -5,7 +5,9 @@ import './field.dart';
 import './menu_bar.dart';
 import './field_settings.dart';
 
-const gameTick = Duration(milliseconds: 400);
+const gameTick = Duration(milliseconds: 350);
+
+const swipeSensivity = 15;
 
 class GameScreen extends StatefulWidget {
   const GameScreen({Key? key}) : super(key: key);
@@ -36,6 +38,29 @@ class _GameScreenState extends State<GameScreen> {
       setState(() {
         _gameEngine!.makeMove(_currentDirection);
       });
+    });
+  }
+
+  void _onPanUpdate(DragUpdateDetails details) {
+    if (details.delta.dx.abs() < swipeSensivity &&
+        details.delta.dy.abs() < swipeSensivity) {
+      return;
+    }
+
+    setState(() {
+      if (details.delta.dx.abs() > details.delta.dy.abs()) {
+        if (details.delta.dx > 0) {
+          _currentDirection = GameMove.right;
+        } else {
+          _currentDirection = GameMove.left;
+        }
+      } else {
+        if (details.delta.dy > 0) {
+          _currentDirection = GameMove.down;
+        } else {
+          _currentDirection = GameMove.up;
+        }
+      }
     });
   }
 
@@ -72,9 +97,12 @@ class _GameScreenState extends State<GameScreen> {
               gameEngine: _gameEngine!,
             ),
           ),
-          Field(
-            gameEngine: _gameEngine!,
-            squareSize: squareSize!,
+          GestureDetector(
+            onPanUpdate: _onPanUpdate,
+            child: Field(
+              gameEngine: _gameEngine!,
+              squareSize: squareSize!,
+            ),
           )
         ],
       ),
