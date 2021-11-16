@@ -1,8 +1,11 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import './game_engine.dart';
 import './field.dart';
 import './menu_bar.dart';
 import './field_settings.dart';
+
+const gameTick = Duration(milliseconds: 400);
 
 class GameScreen extends StatefulWidget {
   const GameScreen({Key? key}) : super(key: key);
@@ -14,29 +17,48 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
-  FieldSettings? fieldSettings;
-  SnakeGameEngine? gameEngine;
+  FieldSettings? _fieldSettings;
+  SnakeGameEngine? _gameEngine;
+  GameMove _currentDirection = GameMove.right;
+  Timer? _gameTickTimer;
+
+  @override
+  initState() {
+    super.initState();
+
+    _currentDirection = GameMove.right;
+    // Add listeners to this class
+    _gameTickTimer = Timer.periodic(gameTick, (timer) {
+      if (_gameEngine == null) {
+        return;
+      }
+
+      setState(() {
+        _gameEngine!.makeMove(_currentDirection);
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    if (fieldSettings == null || gameEngine == null) {
+    if (_fieldSettings == null || _gameEngine == null) {
       WidgetsBinding.instance?.addPostFrameCallback((_) {
-        if (fieldSettings == null || gameEngine == null) {
+        if (_fieldSettings == null || _gameEngine == null) {
           setState(() {
             var newSettings = calculateFieldsettings(context);
-            fieldSettings = newSettings;
+            _fieldSettings = newSettings;
             var newGameEngine = SnakeGameEngine(
                 xSize: newSettings.widthSquares,
                 ySize: newSettings.heightSquares);
             newGameEngine.initializeGame();
-            gameEngine = newGameEngine;
+            _gameEngine = newGameEngine;
           });
         }
       });
       return Container();
     }
 
-    var squareSize = fieldSettings?.squareSize;
+    var squareSize = _fieldSettings?.squareSize;
 
     return Container(
       width: double.infinity,
@@ -44,14 +66,14 @@ class _GameScreenState extends State<GameScreen> {
       color: Colors.white,
       child: Column(
         children: [
-          Container(
+          SizedBox(
             height: menuBarContainerHeight,
             child: MenuBar(
-              gameEngine: gameEngine!,
+              gameEngine: _gameEngine!,
             ),
           ),
           Field(
-            gameEngine: gameEngine!,
+            gameEngine: _gameEngine!,
             squareSize: squareSize!,
           )
         ],
