@@ -11,7 +11,7 @@ typedef BuilderCallBack = Widget Function(BuildContext);
 
 var _routeBuilders = {
   Routes.home: (BuildContext context) => const StartScreen(),
-  Routes.leaderboard: (BuildContext context) => const LeaderboardScreen(),
+  Routes.leaderboard: (BuildContext context) => LeaderboardScreen(),
   Routes.game: (BuildContext context) => const GameScreen()
 };
 

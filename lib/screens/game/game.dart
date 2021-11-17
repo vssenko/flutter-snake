@@ -4,6 +4,8 @@ import './game_engine.dart';
 import './field.dart';
 import './menu_bar.dart';
 import './field_settings.dart';
+import './end_game_dialog.dart';
+import '../../services/leaderboard.dart';
 import '../../utils/routes.dart';
 
 const gameTick = Duration(milliseconds: 350);
@@ -20,10 +22,15 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
+  late LeaderBoardService _leaderBoardService;
   FieldSettings? _fieldSettings;
   SnakeGameEngine? _gameEngine;
   GameMove _currentDirection = GameMove.right;
   Timer? _gameTickTimer;
+
+  _GameScreenState() {
+    _leaderBoardService = LeaderBoardService();
+  }
 
   void _startNewGame() {
     setState(() {
@@ -54,40 +61,32 @@ class _GameScreenState extends State<GameScreen> {
     _startNewGame();
   }
 
+  _saveResultInLeaderboard(GameDialogResultData data) {
+    if (_gameEngine!.score > 0) {
+      _leaderBoardService.addLeader(
+          name: data.username, score: _gameEngine!.score);
+    }
+  }
+
   Future<void> _showEndGameDialog() async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Your score is ${_gameEngine?.score}'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: [
-                Text('Thanks for playing this masterpiece!'),
-                Text('Your score is ${_gameEngine?.score}!'),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ElevatedButton(
-                      child: const Text('New game'),
-                      onPressed: () {
-                        _startNewGame();
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    ElevatedButton(
-                      child: const Text('Main menu'),
-                      onPressed: () {
-                        Navigator.pushNamed(context, Routes.home);
-                      },
-                    )
-                  ],
-                )
-              ],
-            ),
-          ),
-        );
+            title: Text('Your score is ${_gameEngine?.score}'),
+            content: EndGameDialog(
+              score: _gameEngine!.score,
+              onStartGameClick: (GameDialogResultData data) {
+                _saveResultInLeaderboard(data);
+                _startNewGame();
+                Navigator.of(context).pop();
+              },
+              onCloseClick: (GameDialogResultData data) {
+                _saveResultInLeaderboard(data);
+                Navigator.pushNamed(context, Routes.home);
+              },
+            ));
       },
     );
   }
