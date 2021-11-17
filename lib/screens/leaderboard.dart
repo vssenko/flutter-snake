@@ -52,7 +52,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                 padding: EdgeInsets.only(top: 50),
                 child: Text(
                   'Leaderboard',
-                  style: TextStyle(color: Colors.blue[600]),
+                  style: TextStyle(color: Colors.blue[600], fontSize: 22),
                 )),
             if (leaderTiles.length > 0)
               Container(
@@ -73,8 +73,14 @@ class _LeaderRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [Text(leader.name), Text(leader.score.toString())]);
+    var rowTextStyle = TextStyle(fontSize: 14, color: Colors.blue[500]);
+
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      Text(
+        leader.name,
+        style: rowTextStyle,
+      ),
+      Text(leader.score.toString(), style: rowTextStyle)
+    ]);
   }
 }

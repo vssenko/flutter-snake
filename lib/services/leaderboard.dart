@@ -40,13 +40,13 @@ class LeaderBoardService {
           leaderList.firstWhere((element) => element.name == newLeader.name);
     } catch (e) {}
 
-    if (existingLeader != null && existingLeader.score > newLeader.score) {
+    if (existingLeader != null && existingLeader.score < newLeader.score) {
       existingLeader.score = score;
     } else {
       leaderList.add(newLeader);
     }
 
-    leaderList.sort((a, b) => a.score - b.score);
+    leaderList.sort((a, b) => b.score - a.score);
     leaderList = leaderList.sublist(0, math.min(leaderList.length, 10));
 
     List<String> result = leaderList.map((e) => e.serialize()).toList();
@@ -64,8 +64,10 @@ class LeaderBoardService {
     var box = await _openBox();
     List<String> currentList =
         box.get(_leadersKey, defaultValue: <String>[]) as List<String>;
-    return currentList.map<Leader>((s) {
+    var leaders = currentList.map<Leader>((s) {
       return Leader.deserialize(s);
     }).toList();
+    leaders.sort((a, b) => b.score - a.score);
+    return leaders;
   }
 }
